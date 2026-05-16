@@ -1,0 +1,104 @@
+//adc
+#include<lpc21xx.h>
+#include "delay.h"
+
+
+#include "types.h"
+//peripheral clk 15Mhz
+#define PCLK 15000000
+
+//ADC CLK 3MHz
+#define ADCLK 3000000
+
+
+#define ANI1 0x01000000
+
+
+
+//adc channel number 27
+
+//power down bit 21 
+#define PDN 21
+
+// used to start conversion
+//start bit 24
+#define START 24
+
+//ADDR
+//done bit 
+#define DN 31
+//result bit
+#define RES 6
+
+
+
+
+//CLK divider
+#define CLKDIV ((PCLK/ADCLK)-1)
+
+//clk div bits  from 8-15
+#define CLKDIV_BIT 8
+
+
+
+
+void init_ADC()
+{
+	//cfg pin 26 as adc pin
+	PINSEL1=0x15000000;
+	 PINSEL1|=ANI1;
+	
+	//set channel 0 as input
+	//IODIR0 |=0X0<<CH_NO;
+	/*
+	ADCR is ADC control register
+		power pin should be in operational mode 1 is set
+		clock divider value should be provided because it works 
+		less than 4.5MHz
+	*/
+		ADCR|=(1<<PDN)|(CLKDIV<<CLKDIV_BIT);
+}
+void READ_ADC(u8 CH_NO,u32 *ADC_VAL,f32 *evr)
+{
+	//Clearing channels bits if any channel is already cfg for adc
+		ADCR =(ADCR&~(0XFF<<0));
+	
+	//select channel that i want to use as ADC func
+		ADCR|=1<<CH_NO;
+	
+	/*
+	To start conversion fisrt we need to set start bit
+	*/
+	//
+	
+		ADCR|=(1<<START);
+		//To convert Analog to Digital values it need some time so delay is given
+		delay_ms(10);
+	// till done is true loop sholud run 
+	//it indicates convesrion still not completed if done bit is 0
+	//once done bit is 1 then confirmation of conversion 
+	//done is automatically set if conversion is completed
+	while(((ADDR>>DN)&1)==0){ }
+	
+	//after conversiion stop the start bit in ADCR
+		ADCR =(ADCR &~(1<<START));
+	
+	
+	
+	//update ADC VALUE from result bits
+	// 00 0000 0000
+	
+	*ADC_VAL=((ADDR>>RES)&0X3FF);
+	
+	//equivalent analog value
+	//3.3v is for ADC Ref 
+	//(3.3/1023)=step size
+	//((2^10)-1)=1023 pow is 10 beacause it is 10 bit adc 
+	*evr =(3.3/1023)*(*ADC_VAL);
+	if(*evr<0)
+	{
+		*evr=0;
+	}
+	
+}
+
