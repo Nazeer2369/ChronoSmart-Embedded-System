@@ -1,0 +1,13 @@
+void enable_eint0(void);
+void eint0_isr(void)__irq;
+void intrpt(void);
+int goto_menu(void);
+int check_password(int ,int);
+int get_password(void);
+int devices_fun(void);
+int goto_device_2(void);
+int goto_device_1(void);
+void change_password(void);
+void goto_date(void);
+void goto_time(void);
+void Date_time(int *);
