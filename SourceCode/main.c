@@ -32,27 +32,6 @@ extern int temp_threshold;
 // flag = 1 --> normal operation
 // flag = 0 --> interrupt/menu mode
 int flag=1;
-
-
-
-//#define SW 25
-
-//#define CH_NO 1 
-
-
-/*
-s32 hour1,min1,sec1,Date,Month,Year;
-char Day[7][4]={"SUN","MON","TUE","WED","THU","FRI","SAT"};
-char str[5]="Temp";
-char space[17]="                ";
-char edit[20]="press 1 for edit";
-u32 ADC_VAL;
-f32 evr,temp;
-s32 day1;
-*/
-//char menu[40]="1.edit time 2.edit date 3.go back 4.done";
-
-
 /*
  Function : operation()
  Purpose  : 
@@ -106,7 +85,14 @@ void operation()
 		IOSET0=1<<DEVICE2;
 
 		// Wait until temperature comes below threshold
-		while((temp>temp_threshold)==1);
+		while((temp>temp_threshold)==1)
+		{
+			// Read ADC value and equivalent voltage
+			READ_ADC(CH_NO ,&ADC_VAL,&evr);
+			// Convert voltage into temperature
+			temp=evr*100;
+		}
+				
 	}
 
 
@@ -148,11 +134,6 @@ void operation()
 		// Device OFF
         IOSET0=1<<DEVICE2;
 	}
-					
-
-	//cmd_lcd(0x01);
-			
-
 	/**************** DISPLAY TIME ****************/
 
 	// Display current time on LCD
@@ -181,12 +162,7 @@ void operation()
 	// Extra spaces
 	display_char(' ');
 	display_char(' ');
-			
-
-	//display_char((temp/10)+48);
-	//display_char((temp%10)+48);
-				
-
+	
 	/**************** DISPLAY DATE ****************/
 
 	// Display date
@@ -247,8 +223,6 @@ int main()
 		if(flag==0)
 		{
 			intrpt();
-
-			//flag=1;
 		}
 
 		// Normal operation mode
