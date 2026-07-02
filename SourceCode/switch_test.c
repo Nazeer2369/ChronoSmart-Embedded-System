@@ -114,8 +114,7 @@ char days[][4] =
   "SAT"
 };
 
-// char u_pass[5];
-// char device[]="1.ON TIME 2.OFF TIME";
+
 // Variable storing keypad key value
 int key;
 
@@ -708,22 +707,6 @@ int Date_time(int* data, char* str)
 
     // backspace key pressed
     else if (key == 11) {
-      /*
-      if(k>0)
-      {
-          k--;
-
-          cmd_lcd(0xc0+k);
-          display_char(' ');
-
-          cmd_lcd(0xc0+k);
-
-          *data=(*data)/10;
-
-          temp1=*data;
-      }
-      */
-
       // call backspace helper function
       back_space(&k, &data);
     }
@@ -1224,8 +1207,7 @@ void change_PIN()
         }
       }
 
-      // cmd_lcd(0x01);
-      // delay_ms(50);
+     
     }
 
     // Display success message
@@ -1297,16 +1279,7 @@ int goto_device_1()
 
     display_string("  ");
 
-    /*
-    Old display logic
-
-    temp1=0;
-    cmd_lcd(0x01);
-    cmd_lcd(0x80);
-    display_string("1.ON TIME");
-    cmd_lcd(0xc0);
-    display_string("2.OFF TIME");
-    */
+   
 
     // Wait for key press
     while (key_scan(&key)) {
@@ -1494,17 +1467,12 @@ int goto_device_1()
 
     // Increment menu position
     if (key == 11) {
-      // pos++;
-      // pos=pos%3;
-
       pos = (pos + 1 + 3) % 3;
     }
 
     // Decrement menu position
     if (key == 12) {
-      // pos--;
-      // pos=pos%3;
-
+     
       pos = (pos - 1 + 3) % 3;
     }
 
@@ -1588,13 +1556,7 @@ int goto_device_2()
 
     display_string("  ");
 
-    /*
-    Old display logic
-
-    display_string("1.ON TIME");
-    cmd_lcd(0xc0);
-    display_string("2.OFF TIME");
-    */
+  
 
     // Wait for key press
     while (key_scan(&key)) {
@@ -1756,13 +1718,11 @@ int goto_device_2()
     if (key == 11) {
       pos = (pos + 1 + 3) % 3;
 
-      // pos++;
-      // pos=pos%3;
     }
 
     // Decrement menu position
     if (key == 12) {
-      // pos--;
+      
 
       pos = (pos - 1 + 3) % 3;
 
@@ -1848,14 +1808,7 @@ int devices_fun()
 
     display_string("   ");
 
-    /*
-    Old display method
-    cmd_lcd(0x01);
-    display_string("1.Device1 Time ");
-    cmd_lcd(0xc0);
-    display_string("2.Device2 Time");
-    */
-
+    
     // Wait for key press
     while (key_scan(&key)) {
       cnt++;
@@ -1871,13 +1824,7 @@ int devices_fun()
     // Reset counter
     cnt = 0;
 
-    /*
-    Old menu display
-    cmd_lcd(0x01);
-    display_string("1.Device1 Time ");
-    cmd_lcd(0xc0);
-    display_string("2.Device2 Time");
-    */
+   
 
     // Check if selected current or next menu option
     if ((key == ((pos + 1) % 3)) || (key == (pos1))) {
@@ -1931,31 +1878,7 @@ int devices_fun()
       }
     }
 
-    /*
-    Old logic retained for reference
 
-    if(key==1)
-    {
-        if(goto_device_1()==-1)
-        {
-            return -1;
-        }
-        else if(goto_device_1()==0)
-            return 0;
-        else
-            return 1;
-    }
-
-    if(key==2)
-    {
-        if(goto_device_2()==-1)
-            return 1;
-        else if (goto_device_2()==0)
-            return 0;
-        else
-            return 1;
-    }
-    */
 
     // Increment menu position
     if (key == 11) {
@@ -2108,21 +2031,7 @@ Return:
 ----------------------------------------------------------*/
 int check_PIN(int p1, int p2)
 {
-  // int i;
-
-  /*
-  Old logic for string comparison
-
-  for(i=0;i<4;i++)
-  {
-      if(str1[i]!=str2[i])
-      {
-          return 1;
-          break;
-      }
-  }
-  */
-
+ 
   // Compare both PINs
   if (p1 == p2) {
     // PIN correct
@@ -2168,12 +2077,7 @@ int goto_menu()
     return -1;
   }
 
-  /*if(count>6)
-  {
-      count=0;
-      return 1;
-  }*/
-  // Compare entered PIN with stored PIN
+    // Compare entered PIN with stored PIN
   if (check_PIN(user, pass) == 1) {
     // Initialize menu position
     pos = 1;
@@ -2305,9 +2209,7 @@ int goto_menu()
       if (key == 12) {
         pos = (pos - 1 + 7) % 7;
       }
-      /*
-      Old menu handling code kept for reference
-      */
+    
 
       // Clear LCD
       cmd_lcd(0x01);
@@ -2333,8 +2235,7 @@ int goto_menu()
   // Invalid PIN return
   return 0;
 
-  // cmd_lcd(0x01);
-  // display_string(Done);
+  
 }
 /*---------------------------------------------------------
 Function : intrpt
@@ -2398,7 +2299,6 @@ void intrpt()
   }
   // Finally clear LCD
   cmd_lcd(0x01);
-  // flag=1;
 }
 void eint0_isr(void) __irq
 {
@@ -2412,14 +2312,12 @@ void eint0_isr(void) __irq
 }
 void enable_eint0()
 {
-  // IODIR0 &= ~(1<<14);
-  // IODIR0|=1<<0;
-  // IODIR0|=1<<2;
+ 
 
   // Cfg po.1 as EINT0
   PINSEL0 |= 0x0000000C;
 
-  // PINSEL1|=0x00000001;
+  
   // Select EINT0 as IRQ
   VICIntSelect = 0 << CH_NO_EXT;
 
@@ -2440,11 +2338,8 @@ void enable_eint0()
   //   --------------------------------------
   //
   EXTMODE = 1 << 0;
-
   // selected edge so possibilites are
-
   // 1:raising edge or
-
   // 0:falling edge
-  // EXTPOLAR=~1<<0;//selecting raising edge
+ 
 }
