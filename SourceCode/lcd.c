@@ -10,7 +10,6 @@
 // LCD data pins starting position
 #define DATA 8
 
-//char space[17]="                ";
 
 // Function prototype
 void write_lcd(int );
@@ -114,7 +113,7 @@ void lcd_init()
 	 0x06 = Increment cursor, no shift
 	*/
 
-	//cmd_lcd(0x0f);
+	
 	cmd_lcd(0x06);
 	
 }
@@ -191,7 +190,7 @@ void display_string(char *str)
 				display_char(32);
 			}
 
-			///delay_ms(2);
+			
 
 			count=0;
 
